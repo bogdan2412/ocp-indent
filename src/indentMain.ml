@@ -93,12 +93,11 @@ let indent_file args = function
 
 let main =
   Cmdliner.Term.(
-    pure (fun (args,files) -> List.iter (indent_file args) files)
+    const (fun (args,files) -> List.iter (indent_file args) files)
     $ Args.options
   ),
   Args.info
 
 let _ =
-  match Cmdliner.Term.eval main with
-  | `Error _ -> exit 1
-  | _ -> exit 0
+  let term, info = main in
+  exit (Cmdliner.Cmd.eval (Cmdliner.Cmd.v info term))
